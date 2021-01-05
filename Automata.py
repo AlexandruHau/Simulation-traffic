@@ -37,17 +37,26 @@ class Cellular_Automata(object):
         for i in range (no_cells):
             # If the cell has state 1
             if(self.road[0][i] == 1):
-
+                # Analyse the case where the next cell is empty
+                # When the last cell is reached, the next value will be the first cell. Hence, the modulo operation.
                 if(self.road[0][ (i+1) % no_cells ] == 0):
+                    # Analyse if the car has previously moved. This is why two arrays have been created. self.road array retains only the curent state of the cell.
+                    # On the other hand, self.state array also takes into account the previous state of the cell. If the car has previously moved and 
+                    # is now located at position i, then self.state[0][i] will have value -1. If the car has not moved and is at position i, then self.state[0][i] 
+                    # will have value 0. The two cases are analysed below
                     if(self.state[0][i] == -1):
                         r = random.random()
                         if(r <= p_move):
+                            # If the car moves, update the values of the road and state numpy arrays. The car leaves the current cell at position i and moves to position (i+1)
+                            # or 0 if the car is located at the last cell
                             self.road[1][i] = 0
                             self.road[1][(i+1) % no_cells] = 1
                             self.state[0][i] = 0
                             self.state[0][ (i+1) % no_cells ] = -1
+                            # Update the number of cars which have moved
                             moving_cars += 1
                     if(self.state[0][i] == 1):
+                        # In this case, the car has not previously moved
                         r = random.random()
                         if(r <= p_stay):
                             self.road[1][i] = 0
@@ -60,7 +69,7 @@ class Cellular_Automata(object):
                     self.state[0][i] = 1
             # If the cell has state 0
             if(self.road[0][i] == 0):
-
+                # The same cases are analysed here, ony from the motion of the cars behind cell located at position i 
                 if(self.road[0][ (i-1) % no_cells ] == 1):
                     if(self.state[0][i] == -1):
                         r = random.random()
@@ -79,7 +88,8 @@ class Cellular_Automata(object):
                 else:
                     self.road[1][i] = 0
                     self.state[0][i] = 0
-        # The first row takes the value of the second row to repeat the process
+        # The first row of the road array represents the initial state of the traffic and the second row represents the final state of the traffic.
+        # Update the the initial state to be the same as the final state, in order to repeat the process
         self.road[0] = self.road[1]
         return moving_cars
 
