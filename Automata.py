@@ -4,29 +4,35 @@ import matplotlib.pyplot as plt
 
 class Cellular_Automata(object):
 
+    # Initialize the constructor
+    # Read from the keyboard the input values: the number of cells for the road, car density and the number of iterations
+    # The road will be modified just below, in the constructor. The declaration has been made here for easier code handling
     def __init__(self, no_cells, density, no_iter):
-        # Initialize the constructor
-        # Read from the keyboard the input values
+        # The road is initialized as a matrix of two numpy arrays. This is to outline the road initially and after each car has gone a certain step distance
         self.road = np.zeros( (2, no_cells) )
-        # Array for the state of each car (has/has not moved)
+        # Another array has been defined for the state of the cell. In this task, it s taken into account whether the car has previously moved or not. 
+        # Initially, all the states of the cells within the state array are 1
         self.state = np.zeros( (1, no_cells) )
-        # For the simulation of the traffic, the cells with car have state 1
-        # The cells are randomly chosen
+        # Some random cells are selected, standing for the cars (the filled cells)
+        # Work out the number of cars as function of the given traffic density and the desired number of cells
         no_cars = round( density * no_cells )
         self.car = no_cars
         for i in range (no_cars):
+            # If the selected cell is already filled, try another value, until an empty one has been found
             r = random.randint(0, no_cells - 1)
             while ( self.road[0][r] == 1):
                 r = random.randint(0, no_cells - 1)
+            # Once an empty cell has been found, it is filled
             self.road[0][r] = 1
             # State array with cells 0 involves empty cells, 1 are used for stationary cars
-            # and -1 for cars which previously moved
+            # and -1 for cars which previously moved. Initially, all cars that are created have state 1
             self.state[0][r] = 1
         print("The number of the cars is: " + str(no_cars))
         
 
     def modify_step(self, no_cells, p_move, p_stay):
         # Modify the next step for the traffic using the rule specified below
+        # It is taken into account whether the car has previously moved or not
         moving_cars = 0
         for i in range (no_cells):
             # If the cell has state 1
